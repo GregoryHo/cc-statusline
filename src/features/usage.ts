@@ -124,6 +124,17 @@ progress_bar() {
   filled=$(( pct * width / 100 )); empty=$(( width - filled ))
   printf '%*s' "$filled" '' | tr ' ' '▓'
   printf '%*s' "$empty" '' | tr ' ' '░'
+}
+
+format_number() {
+  local num="\$1"
+  # Only format if it's a valid number
+  if [[ "\$num" =~ ^[0-9]+$ ]] && [ "\$num" -gt 999 ]; then
+    # Reverse the number, add commas every 3 digits, then reverse back
+    echo "\$num" | rev | sed 's/.../&,/g' | sed 's/,$//g' | rev
+  else
+    echo "\$num"
+  fi
 }`
 }
 
@@ -156,14 +167,17 @@ fi`
   }
 
   if (config.showTokens) {
-    const tokenEmoji = emojis ? '📊' : 'tok:'
+    const tokenEmoji = emojis ? '📊' : 'tokens:'
     displayCode += `
 # tokens
 if [ -n "$tot_tokens" ] && [[ "$tot_tokens" =~ ^[0-9]+$ ]]; then
   if [ -n "$tpm" ] && [[ "$tpm" =~ ^[0-9.]+$ ]] && ${config.showBurnRate ? 'true' : 'false'}; then
-    printf '  ${tokenEmoji} %s%s tok (%.0f tpm)%s' "$(usage_color)" "$tot_tokens" "$tpm" "$(rst)"
+    formatted_tokens=$(format_number "$tot_tokens")
+    formatted_tpm=$(format_number "$(printf '%.0f' "$tpm")")
+    printf '  ${tokenEmoji} %s%s tokens (%s tpm)%s' "$(usage_color)" "$formatted_tokens" "$formatted_tpm" "$(rst)"
   else
-    printf '  ${tokenEmoji} %s%s tok%s' "$(usage_color)" "$tot_tokens" "$(rst)"
+    formatted_tokens=$(format_number "$tot_tokens")
+    printf '  ${tokenEmoji} %s%s tokens%s' "$(usage_color)" "$formatted_tokens" "$(rst)"
   fi
 fi`
   }

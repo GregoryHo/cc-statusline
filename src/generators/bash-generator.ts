@@ -290,22 +290,26 @@ fi` : ''}${usageConfig.showTokens ? `
 if [ -n "$tot_tokens" ] && [[ "$tot_tokens" =~ ^[0-9]+$ ]]; then${usageConfig.showBurnRate ? `
   if [ -n "$tpm" ] && [[ "$tpm" =~ ^[0-9.]+$ ]]; then
     tpm_formatted=$(printf '%.0f' "$tpm")
+    formatted_tokens=$(format_number "\${tot_tokens}")
+    formatted_tpm=$(format_number "\${tpm_formatted}")
     if [ -n "$line3" ]; then
-      line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok (\${tpm_formatted} tpm)$(rst)"
+      line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${formatted_tokens} tokens (\${formatted_tpm} tpm)$(rst)"
     else
-      line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok (\${tpm_formatted} tpm)$(rst)"
+      line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${formatted_tokens} tokens (\${formatted_tpm} tpm)$(rst)"
     fi
   else
+    formatted_tokens=$(format_number "\${tot_tokens}")
     if [ -n "$line3" ]; then
-      line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok$(rst)"
+      line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${formatted_tokens} tokens$(rst)"
     else
-      line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok$(rst)"
+      line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${formatted_tokens} tokens$(rst)"
     fi
   fi` : `
+  formatted_tokens=$(format_number "\${tot_tokens}")
   if [ -n "$line3" ]; then
-    line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok$(rst)"
+    line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${formatted_tokens} tokens$(rst)"
   else
-    line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok$(rst)"
+    line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${formatted_tokens} tokens$(rst)"
   fi`}
 fi` : ''}
 
