@@ -8,6 +8,7 @@ export interface StatuslineConfig {
   ccusageIntegration: boolean
   logging: boolean
   customEmojis: boolean
+  iconStyle?: 'emoji' | 'nerd-font' | 'unicode' | 'ascii'
   installLocation?: 'global' | 'project'
 }
 
@@ -41,8 +42,20 @@ export async function collectConfiguration(): Promise<StatuslineConfig> {
     {
       type: 'confirm',
       name: 'colors',
-      message: '\n🎨 Enable modern color scheme and emojis?',
+      message: '\n🎨 Enable modern color scheme?',
       default: true
+    },
+    {
+      type: 'list',
+      name: 'iconStyle',
+      message: '\n🎯 Choose icon style:',
+      choices: [
+        { name: '😀 Emoji (works everywhere)', value: 'emoji' },
+        { name: ' Nerd Font (requires Nerd Font)', value: 'nerd-font' },
+        { name: '▸ Unicode (better compatibility)', value: 'unicode' },
+        { name: '[>] ASCII (maximum compatibility)', value: 'ascii' }
+      ],
+      default: 'emoji'
     },
     {
       type: 'confirm',
@@ -71,6 +84,7 @@ export async function collectConfiguration(): Promise<StatuslineConfig> {
     ccusageIntegration: true, // Always enabled since npx works
     logging: config.logging,
     customEmojis: false,
+    iconStyle: config.iconStyle || 'emoji',
     installLocation: config.installLocation
   } as StatuslineConfig
 }

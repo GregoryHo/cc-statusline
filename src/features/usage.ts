@@ -12,14 +12,14 @@ export function generateUsageBashCode(config: UsageFeature, colors: boolean): st
 
   const colorCode = colors ? `
 # ---- usage colors ----
-usage_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;189m'; fi; }  # lavender
-cost_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;222m'; fi; }   # light gold
+usage_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;147m'; fi; }  # light purple
+cost_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;226m'; fi; }   # bright yellow (high visibility)
 burn_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;220m'; fi; }   # bright gold
 session_color() { 
   rem_pct=$(( 100 - session_pct ))
-  if   (( rem_pct <= 10 )); then SCLR='38;5;210'  # light pink
-  elif (( rem_pct <= 25 )); then SCLR='38;5;228'  # light yellow  
-  else                          SCLR='38;5;194'; fi  # light green
+  if   (( rem_pct <= 10 )); then SCLR='38;5;196'  # bright red (critical)
+  elif (( rem_pct <= 25 )); then SCLR='38;5;208'  # orange (warning)
+  else                          SCLR='38;5;120'; fi  # bright green (good)
   if [ "$use_color" -eq 1 ]; then printf '\\033[%sm' "$SCLR"; fi
 }
 ` : `
@@ -122,8 +122,8 @@ progress_bar() {
   pct="\${1:-0}"; width="\${2:-10}"
   [[ "$pct" =~ ^[0-9]+$ ]] || pct=0; ((pct<0))&&pct=0; ((pct>100))&&pct=100
   filled=$(( pct * width / 100 )); empty=$(( width - filled ))
-  printf '%*s' "$filled" '' | tr ' ' '='
-  printf '%*s' "$empty" '' | tr ' ' '-'
+  printf '%*s' "$filled" '' | tr ' ' '▓'
+  printf '%*s' "$empty" '' | tr ' ' '░'
 }`
 }
 

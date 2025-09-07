@@ -26,11 +26,11 @@ RST() { if [ "$use_color" -eq 1 ]; then printf '\\033[0m'; fi; }
 export function generateBasicColors(): string {
   return `
 # ---- modern sleek colors ----
-dir_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;117m'; fi; }    # sky blue
-model_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;147m'; fi; }  # light purple  
-version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;180m'; fi; } # soft yellow
-cc_version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;249m'; fi; } # light gray
-style_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;245m'; fi; } # gray
+dir_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;45m'; fi; }      # bright cyan (highest priority)
+model_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;117m'; fi; }   # sky blue (medium priority)
+version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;179m'; fi; } # amber (lower priority)
+cc_version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;244m'; fi; } # medium gray
+style_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;175m'; fi; }   # light pink
 rst() { if [ "$use_color" -eq 1 ]; then printf '\\033[0m'; fi; }
 `
 }
