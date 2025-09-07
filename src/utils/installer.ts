@@ -7,7 +7,8 @@ import inquirer from 'inquirer'
 export async function installStatusline(
   script: string,
   outputPath: string,
-  config: StatuslineConfig
+  config: StatuslineConfig,
+  nonInteractive: boolean = false
 ): Promise<void> {
   try {
     // Determine the target directory based on install location
@@ -22,14 +23,21 @@ export async function installStatusline(
     let shouldWrite = true
     try {
       await fs.access(scriptPath)
-      // File exists, ask for confirmation
-      const { confirmOverwrite } = await inquirer.prompt([{
-        type: 'confirm',
-        name: 'confirmOverwrite',
-        message: `⚠️  ${isGlobal ? 'Global' : 'Project'} statusline.sh already exists. Overwrite?`,
-        default: false
-      }])
-      shouldWrite = confirmOverwrite
+      // File exists
+      if (nonInteractive) {
+        // In non-interactive mode, always overwrite
+        console.log(`ℹ️  Overwriting existing ${isGlobal ? 'global' : 'project'} statusline.sh`)
+        shouldWrite = true
+      } else {
+        // Ask for confirmation in interactive mode
+        const { confirmOverwrite } = await inquirer.prompt([{
+          type: 'confirm',
+          name: 'confirmOverwrite',
+          message: `⚠️  ${isGlobal ? 'Global' : 'Project'} statusline.sh already exists. Overwrite?`,
+          default: false
+        }])
+        shouldWrite = confirmOverwrite
+      }
     } catch {
       // File doesn't exist, proceed
     }
@@ -42,7 +50,7 @@ export async function installStatusline(
     }
 
     // Update settings.json safely
-    await updateSettingsJson(claudeDir, 'statusline.sh', isGlobal)
+    await updateSettingsJson(claudeDir, 'statusline.sh', isGlobal, nonInteractive)
 
     // Note: statusline-config.json removed per user feedback - not needed
     // The statusline script contains all necessary configuration info
@@ -52,7 +60,7 @@ export async function installStatusline(
   }
 }
 
-async function updateSettingsJson(claudeDir: string, scriptName: string, isGlobal: boolean): Promise<void> {
+async function updateSettingsJson(claudeDir: string, scriptName: string, isGlobal: boolean, nonInteractive: boolean = false): Promise<void> {
   const settingsPath = path.join(claudeDir, 'settings.json')
   
   try {
@@ -74,18 +82,26 @@ async function updateSettingsJson(claudeDir: string, scriptName: string, isGloba
       const isOurStatusline = existingStatusLine.command?.includes('statusline.sh')
       
       if (!isOurStatusline) {
-        // There's a different statusline configured, ask user
-        const { confirmReplace } = await inquirer.prompt([{
-          type: 'confirm',
-          name: 'confirmReplace',
-          message: `⚠️  ${isGlobal ? 'Global' : 'Project'} settings.json already has a statusLine configured (${existingStatusLine.command}). Replace it?`,
-          default: false
-        }])
-        
-        if (!confirmReplace) {
-          console.warn('\n⚠️  Statusline script was saved but settings.json was not updated.')
-          console.warn('   Your existing statusLine configuration was preserved.')
+        // There's a different statusline configured
+        if (nonInteractive) {
+          // In non-interactive mode, preserve existing non-statusline.sh configuration
+          console.warn(`\n⚠️  Preserving existing statusLine configuration: ${existingStatusLine.command}`)
+          console.warn('   Statusline script was saved but settings.json was not updated.')
           return
+        } else {
+          // Ask user in interactive mode
+          const { confirmReplace } = await inquirer.prompt([{
+            type: 'confirm',
+            name: 'confirmReplace',
+            message: `⚠️  ${isGlobal ? 'Global' : 'Project'} settings.json already has a statusLine configured (${existingStatusLine.command}). Replace it?`,
+            default: false
+          }])
+          
+          if (!confirmReplace) {
+            console.warn('\n⚠️  Statusline script was saved but settings.json was not updated.')
+            console.warn('   Your existing statusLine configuration was preserved.')
+            return
+          }
         }
       }
     }

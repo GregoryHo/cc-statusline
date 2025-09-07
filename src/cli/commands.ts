@@ -1,4 +1,4 @@
-import { collectConfiguration, displayConfigSummary } from './prompts.js'
+import { collectConfiguration, displayConfigSummary, getDefaultConfiguration } from './prompts.js'
 import { generateBashStatusline } from '../generators/bash-generator.js'
 import { validateConfig } from '../utils/validator.js'
 import { installStatusline } from '../utils/installer.js'
@@ -11,6 +11,7 @@ import { execSync } from 'child_process'
 interface InitOptions {
   output?: string
   install?: boolean
+  defaults?: boolean
 }
 
 function checkJqInstallation(): boolean {
@@ -87,6 +88,11 @@ export async function initCommand(options: InitOptions): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 500)) // Brief pause for UX
     spinner.stop()
 
+    // Non-interactive mode announcement
+    if (options.defaults) {
+      console.log(chalk.cyan('🚀 Running in non-interactive mode with default configuration\n'))
+    }
+
     // Check for jq installation
     const hasJq = checkJqInstallation()
     if (!hasJq) {
@@ -95,25 +101,41 @@ export async function initCommand(options: InitOptions): Promise<void> {
       console.log(chalk.dim('  • Context remaining percentage won\'t be displayed'))
       console.log(chalk.dim('  • Token statistics may not work'))
       console.log(chalk.dim('  • Performance will be slower'))
-      console.log(getJqInstallInstructions())
       
-      // Ask if they want to continue without jq
-      const inquirer = (await import('inquirer')).default
-      const { continueWithoutJq } = await inquirer.prompt([{
-        type: 'confirm',
-        name: 'continueWithoutJq',
-        message: 'Continue without jq?',
-        default: true
-      }])
-      
-      if (!continueWithoutJq) {
-        console.log(chalk.cyan('\n👍 Install jq and run this command again'))
-        process.exit(0)
+      if (!options.defaults) {
+        console.log(getJqInstallInstructions())
+        
+        // Ask if they want to continue without jq
+        const inquirer = (await import('inquirer')).default
+        const { continueWithoutJq } = await inquirer.prompt([{
+          type: 'confirm',
+          name: 'continueWithoutJq',
+          message: 'Continue without jq?',
+          default: true
+        }])
+        
+        if (!continueWithoutJq) {
+          console.log(chalk.cyan('\n👍 Install jq and run this command again'))
+          process.exit(0)
+        }
+      } else {
+        console.log(chalk.dim('Continuing in non-interactive mode without jq...\n'))
       }
     }
 
-    // Collect user configuration
-    const config = await collectConfiguration()
+    // Collect user configuration or use defaults
+    let config
+    if (options.defaults) {
+      config = getDefaultConfiguration()
+      console.log(chalk.green('✅ Using default configuration:'))
+      console.log(chalk.dim('   • All features enabled'))
+      console.log(chalk.dim('   • Colors: enabled'))
+      console.log(chalk.dim('   • Icons: nerd-font'))
+      console.log(chalk.dim('   • Logging: enabled'))
+      console.log(chalk.dim('   • Location: project (./.claude)\n'))
+    } else {
+      config = await collectConfiguration()
+    }
     
     // Validate configuration
     const validation = validateConfig(config)
@@ -160,7 +182,7 @@ export async function initCommand(options: InitOptions): Promise<void> {
       console.log(chalk.cyan('\n📦 Installing statusline...'))
       
       try {
-        await installStatusline(script, resolvedPath, config)
+        await installStatusline(script, resolvedPath, config, options.defaults || false)
         
         console.log(chalk.green('\n✅ Statusline installed!'))
         console.log(chalk.green('\n🎉 Success! Your custom statusline is ready!'))

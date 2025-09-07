@@ -12,6 +12,20 @@ export interface StatuslineConfig {
   installLocation?: 'global' | 'project'
 }
 
+export function getDefaultConfiguration(): StatuslineConfig {
+  return {
+    features: ['directory', 'git', 'model', 'context', 'usage', 'session', 'tokens', 'burnrate'],
+    runtime: 'bash',
+    colors: true,
+    theme: 'detailed',
+    ccusageIntegration: true,
+    logging: true,  // Enabled by default for non-interactive mode
+    customEmojis: false,
+    iconStyle: 'nerd-font',
+    installLocation: 'project'
+  }
+}
+
 export async function collectConfiguration(): Promise<StatuslineConfig> {
   console.log('🚀 Welcome to cc-statusline! Let\'s create your custom Claude Code statusline.\n')
   console.log('✨ All features are enabled by default. Use ↑/↓ arrows to navigate, SPACE to toggle, ENTER to continue.\n')
