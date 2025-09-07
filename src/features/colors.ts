@@ -30,7 +30,7 @@ dir_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;51m'; fi; }    
 model_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;111m'; fi; }   # sky blue (medium priority)
 version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;111m'; fi; } # matching sky blue for model version
 cc_version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;245m'; fi; } # subtle gray (lowest priority)
-style_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;141m'; fi; }   # soft lavender
+style_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;250m'; fi; }   # light gray (more prominent than cc_version)
 rst() { if [ "$use_color" -eq 1 ]; then printf '\\033[0m'; fi; }
 `
 }

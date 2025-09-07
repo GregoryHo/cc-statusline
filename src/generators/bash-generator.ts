@@ -52,7 +52,7 @@ ${hasGit ? generateGitBashCode(gitConfig, config.colors) : ''}
 ${hasContext ? generateContextBashCode(config.colors) : ''}
 ${hasUsage ? generateUsageBashCode(usageConfig, config.colors) : ''}
 ${config.logging ? generateLoggingOutput() : ''}
-${generateDisplaySection(config, gitConfig, usageConfig)}
+${generateDisplaySection(config, gitConfig, usageConfig, iconSet)}
 `
 
   return script.replace(/\n\n\n+/g, '\n\n').trim() + '\n'
@@ -233,7 +233,7 @@ function generateLoggingOutput(): string {
 `
 }
 
-function generateDisplaySection(config: StatuslineConfig, gitConfig: any, usageConfig: any): string {
+function generateDisplaySection(config: StatuslineConfig, gitConfig: any, usageConfig: any, iconSet: any): string {
   const emojis = config.colors && !config.customEmojis
 
   return `
