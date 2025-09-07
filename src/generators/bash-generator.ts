@@ -244,36 +244,36 @@ function generateDisplaySection(config: StatuslineConfig, gitConfig: any, usageC
   return `
 # ---- render statusline ----
 # Line 1: Core info (directory, git, model, claude code version, output style)
-${config.features.includes('directory') ? `printf '${iconSet.directory} %s%s%s' "$(dir_color)" "$current_dir" "$(rst)"` : ''}${gitConfig.enabled ? `
+${config.features.includes('directory') ? `printf '%s${iconSet.directory}%s %s%s%s' "$(dir_color)" "$(rst)" "$(dir_color)" "$current_dir" "$(rst)"` : ''}${gitConfig.enabled ? `
 if [ -n "$git_branch" ]; then
-  printf '  ${iconSet.git} %s%s%s' "$(git_color)" "$git_branch" "$(rst)"
+  printf '  %s${iconSet.git}%s %s%s%s' "$(git_color)" "$(rst)" "$(git_color)" "$git_branch" "$(rst)"
 fi` : ''}${config.features.includes('model') ? `
-printf '  ${iconSet.model} %s%s%s' "$(model_color)" "$model_name" "$(rst)"
+printf '  %s${iconSet.model}%s %s%s%s' "$(model_color)" "$(rst)" "$(model_color)" "$model_name" "$(rst)"
 if [ -n "$model_version" ] && [ "$model_version" != "null" ]; then
-  printf '  ${iconSet.version} %s%s%s' "$(version_color)" "$model_version" "$(rst)"
+  printf '  %s${iconSet.version}%s %s%s%s' "$(version_color)" "$(rst)" "$(version_color)" "$model_version" "$(rst)"
 fi` : ''}
 if [ -n "$output_style" ] && [ "$output_style" != "null" ]; then
-  printf '  ${iconSet.style} %s%s%s' "$(style_color)" "$output_style" "$(rst)"
+  printf '  %s${iconSet.style}%s %s%s%s' "$(style_color)" "$(rst)" "$(style_color)" "$output_style" "$(rst)"
 fi
 if [ -n "$cc_version" ] && [ "$cc_version" != "null" ]; then
-  printf '  ${iconSet.ccVersion} %sv%s%s' "$(cc_version_color)" "$cc_version" "$(rst)"
+  printf '  %s${iconSet.ccVersion}%s %sv%s%s' "$(cc_version_color)" "$(rst)" "$(cc_version_color)" "$cc_version" "$(rst)"
 fi
 
 # Line 2: Context and session time
 line2=""${config.features.includes('context') ? `
 if [ -n "$context_pct" ]; then
   context_bar=$(progress_bar "$context_remaining_pct" 10)
-  line2="${iconSet.context} $(context_color)Context: [\${context_bar}] \${context_remaining_pct}% remaining$(rst)"
+  line2="$(context_color)${iconSet.context}$(rst) $(context_color)Context: [\${context_bar}] \${context_remaining_pct}% remaining$(rst)"
 fi` : ''}${usageConfig.showSession ? `
 if [ -n "$session_txt" ]; then
   if [ -n "$line2" ]; then
-    line2="$line2  ${iconSet.session} $(session_color)\${session_txt}$(rst) $(session_color)[\${session_bar}]$(rst)"
+    line2="$line2  $(session_color)${iconSet.session}$(rst) $(session_color)\${session_txt}$(rst) $(session_color)[\${session_bar}]$(rst)"
   else
-    line2="${iconSet.session} $(session_color)\${session_txt}$(rst) $(session_color)[\${session_bar}]$(rst)"
+    line2="$(session_color)${iconSet.session}$(rst) $(session_color)\${session_txt}$(rst) $(session_color)[\${session_bar}]$(rst)"
   fi
 fi` : ''}${config.features.includes('context') ? `
 if [ -z "$line2" ] && [ -z "$context_pct" ]; then
-  line2="${iconSet.context} $(context_color)Context: [░░░░░░░░░░] 100% remaining$(rst)"
+  line2="$(context_color)${iconSet.context}$(rst) $(context_color)Context: [░░░░░░░░░░] 100% remaining$(rst)"
 fi` : ''}
 
 # Line 3: Cost and usage analytics
@@ -281,31 +281,31 @@ line3=""${usageConfig.showCost ? `
 if [ -n "$cost_usd" ] && [[ "$cost_usd" =~ ^[0-9.]+$ ]]; then${usageConfig.showBurnRate ? `
   if [ -n "$cost_per_hour" ] && [[ "$cost_per_hour" =~ ^[0-9.]+$ ]]; then
     cost_per_hour_formatted=$(printf '%.2f' "$cost_per_hour")
-    line3="${iconSet.cost} $(cost_color)\\$$(printf '%.2f' "$cost_usd")$(rst) ($(burn_color)\\$\${cost_per_hour_formatted}/h$(rst))"
+    line3="$(cost_color)${iconSet.cost}$(rst) $(cost_color)\\$$(printf '%.2f' "$cost_usd")$(rst) ($(burn_color)\\$\${cost_per_hour_formatted}/h$(rst))"
   else
-    line3="${iconSet.cost} $(cost_color)\\$$(printf '%.2f' "$cost_usd")$(rst)"
+    line3="$(cost_color)${iconSet.cost}$(rst) $(cost_color)\\$$(printf '%.2f' "$cost_usd")$(rst)"
   fi` : `
-  line3="💰 $(cost_color)\\$$(printf '%.2f' "$cost_usd")$(rst)"`}
+  line3="$(cost_color)${iconSet.cost}$(rst) $(cost_color)\\$$(printf '%.2f' "$cost_usd")$(rst)"`}
 fi` : ''}${usageConfig.showTokens ? `
 if [ -n "$tot_tokens" ] && [[ "$tot_tokens" =~ ^[0-9]+$ ]]; then${usageConfig.showBurnRate ? `
   if [ -n "$tpm" ] && [[ "$tpm" =~ ^[0-9.]+$ ]]; then
     tpm_formatted=$(printf '%.0f' "$tpm")
     if [ -n "$line3" ]; then
-      line3="$line3  ${iconSet.tokens} $(usage_color)\${tot_tokens} tok (\${tpm_formatted} tpm)$(rst)"
+      line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok (\${tpm_formatted} tpm)$(rst)"
     else
-      line3="${iconSet.tokens} $(usage_color)\${tot_tokens} tok (\${tpm_formatted} tpm)$(rst)"
+      line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok (\${tpm_formatted} tpm)$(rst)"
     fi
   else
     if [ -n "$line3" ]; then
-      line3="$line3  ${iconSet.tokens} $(usage_color)\${tot_tokens} tok$(rst)"
+      line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok$(rst)"
     else
-      line3="${iconSet.tokens} $(usage_color)\${tot_tokens} tok$(rst)"
+      line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok$(rst)"
     fi
   fi` : `
   if [ -n "$line3" ]; then
-    line3="$line3  📊 $(usage_color)\${tot_tokens} tok$(rst)"
+    line3="$line3  $(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok$(rst)"
   else
-    line3="📊 $(usage_color)\${tot_tokens} tok$(rst)"
+    line3="$(usage_color)${iconSet.tokens}$(rst) $(usage_color)\${tot_tokens} tok$(rst)"
   fi`}
 fi` : ''}
 
