@@ -42,6 +42,7 @@ export function generateBashStatusline(config: StatuslineConfig): string {
 STATUSLINE_VERSION="${VERSION}"
 
 input=$(cat)
+${generateJqDetectionCode()}
 ${config.logging ? generateLoggingCode() : ''}
 ${generateColorBashCode({ enabled: config.colors, theme: config.theme })}
 ${config.colors ? generateBasicColors() : ''}
@@ -58,18 +59,22 @@ ${generateDisplaySection(config, gitConfig, usageConfig, iconSet)}
   return script.replace(/\n\n\n+/g, '\n\n').trim() + '\n'
 }
 
+function generateJqDetectionCode(): string {
+  return `
+# ---- check jq availability ----
+HAS_JQ=0
+if command -v jq >/dev/null 2>&1; then
+  HAS_JQ=1
+fi
+`
+}
+
 function generateLoggingCode(): string {
   return `
 # Get the directory where this statusline script is located
 SCRIPT_DIR="$(cd "$(dirname "\${BASH_SOURCE[0]}")" && pwd)"
 LOG_FILE="\${SCRIPT_DIR}/statusline.log"
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
-
-# ---- check jq availability ----
-HAS_JQ=0
-if command -v jq >/dev/null 2>&1; then
-  HAS_JQ=1
-fi
 
 # ---- logging ----
 {
