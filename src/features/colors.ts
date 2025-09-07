@@ -25,12 +25,12 @@ RST() { if [ "$use_color" -eq 1 ]; then printf '\\033[0m'; fi; }
 
 export function generateBasicColors(): string {
   return `
-# ---- modern sleek colors ----
-dir_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;45m'; fi; }      # bright cyan (highest priority)
-model_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;117m'; fi; }   # sky blue (medium priority)
-version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;179m'; fi; } # amber (lower priority)
-cc_version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;244m'; fi; } # medium gray
-style_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;175m'; fi; }   # light pink
+# ---- coordinated color palette ----
+dir_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;51m'; fi; }      # vibrant cyan (highest priority)
+model_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;111m'; fi; }   # sky blue (medium priority)
+version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;111m'; fi; } # matching sky blue for model version
+cc_version_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;245m'; fi; } # subtle gray (lowest priority)
+style_color() { if [ "$use_color" -eq 1 ]; then printf '\\033[38;5;141m'; fi; }   # soft lavender
 rst() { if [ "$use_color" -eq 1 ]; then printf '\\033[0m'; fi; }
 `
 }

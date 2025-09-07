@@ -268,7 +268,7 @@ if [ -n "$session_txt" ]; then
   fi
 fi` : ''}${config.features.includes('context') ? `
 if [ -z "$line2" ] && [ -z "$context_pct" ]; then
-  line2="${iconSet.context} $(context_color)Context: [░░░░░░░░░░] TBD$(rst)"
+  line2="${iconSet.context} $(context_color)Context: [░░░░░░░░░░] 100% remaining$(rst)"
 fi` : ''}
 
 # Line 3: Cost and usage analytics

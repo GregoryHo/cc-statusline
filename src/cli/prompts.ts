@@ -50,12 +50,12 @@ export async function collectConfiguration(): Promise<StatuslineConfig> {
       name: 'iconStyle',
       message: '\n🎯 Choose icon style:',
       choices: [
-        { name: '😀 Emoji (works everywhere)', value: 'emoji' },
         { name: ' Nerd Font (requires Nerd Font)', value: 'nerd-font' },
-        { name: '▸ Unicode (better compatibility)', value: 'unicode' },
+        { name: '😀 Emoji (colorful, works everywhere)', value: 'emoji' },
+        { name: '▸ Unicode (clean, modern icons)', value: 'unicode' },
         { name: '[>] ASCII (maximum compatibility)', value: 'ascii' }
       ],
-      default: 'emoji'
+      default: 'nerd-font'
     },
     {
       type: 'confirm',
@@ -84,7 +84,7 @@ export async function collectConfiguration(): Promise<StatuslineConfig> {
     ccusageIntegration: true, // Always enabled since npx works
     logging: config.logging,
     customEmojis: false,
-    iconStyle: config.iconStyle || 'emoji',
+    iconStyle: config.iconStyle || 'nerd-font',
     installLocation: config.installLocation
   } as StatuslineConfig
 }

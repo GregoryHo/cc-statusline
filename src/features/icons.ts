@@ -93,7 +93,8 @@ export function getIconSet(style: IconStyle): IconSet {
     case 'ascii':
       return asciiIcons
     case 'emoji':
-    default:
       return emojiIcons
+    default:
+      return nerdFontIcons  // Default to nerd-font for best visual experience
   }
 }
