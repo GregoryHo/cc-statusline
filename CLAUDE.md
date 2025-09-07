@@ -32,6 +32,18 @@ npx . init
 ./test/test-installation.sh
 ```
 
+## Important Development Notes
+
+**DO NOT directly modify `.claude/statusline.sh`** - This file is auto-generated!
+
+Instead, follow this workflow:
+1. Modify the source code in `src/` directory (e.g., colors in `src/features/usage.ts`)
+2. Run `npm run build` to rebuild the project
+3. Run `./dist/index.js init --no-install` to regenerate locally
+4. Test with `./dist/index.js preview ./.claude/statusline.sh`
+
+The generated `.claude/statusline.sh` will be overwritten on each regeneration, so direct edits are lost.
+
 ## Architecture
 
 The codebase follows a modular ESM TypeScript architecture:

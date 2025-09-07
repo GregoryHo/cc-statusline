@@ -148,7 +148,7 @@ if [ -n "$session_id" ] && [ "$HAS_JQ" -eq 1 ]; then
 fi
 
 # ---- usage colors ----
-usage_color() { if [ "$use_color" -eq 1 ]; then printf '\033[38;5;147m'; fi; }  # light purple
+usage_color() { if [ "$use_color" -eq 1 ]; then printf '\033[38;5;111m'; fi; }  # deep sky blue
 cost_color() { if [ "$use_color" -eq 1 ]; then printf '\033[38;5;226m'; fi; }   # bright yellow (high visibility)
 burn_color() { if [ "$use_color" -eq 1 ]; then printf '\033[38;5;220m'; fi; }   # bright gold
 session_color() { 
