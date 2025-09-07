@@ -245,14 +245,29 @@ If auto-configuration fails, simply add this to `.claude/settings.json`:
 
 ## 🚀 Performance
 
-| Metric | Target | Typical |
-|--------|--------|---------|
-| **Execution Time** | <100ms | 45-80ms |
-| **Memory Usage** | <5MB | ~2MB |
-| **CPU Impact** | Negligible | <1% |
-| **Dependencies** | Minimal | jq only |
+| Configuration | Target | Actual | Status |
+|--------------|--------|--------|--------|
+| **Minimal** (directory only) | <50ms | ~50ms | ✅ Excellent |
+| **Standard** (dir + git + model) | <100ms | ~100ms | ✅ Good |
+| **Full** (without ccusage) | <150ms | ~150ms | ✅ Acceptable |
+| **Full** (with ccusage) | <300ms | ~3900ms | ⚠️ Slow* |
 
-*Benchmarked on macOS with all features enabled*
+*\*ccusage integration adds 2-3s latency due to external command execution*
+
+### Performance Testing
+
+```bash
+# Run performance benchmarks
+npx tsx test/performance/benchmark.ts
+
+# Run stress tests
+./test/performance/stress-test.sh
+
+# Quick performance check
+./dist/index.js preview ./.claude/statusline.sh
+```
+
+See [Performance Testing Guide](test/performance/PERFORMANCE.md) for detailed benchmarking tools and optimization tips.
 
 ## 🤝 Contributing
 
