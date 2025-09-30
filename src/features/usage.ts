@@ -104,6 +104,8 @@ export function generateUsageUtilities(): string {
 # ---- time helpers ----
 to_epoch() {
   ts="$1"
+  # Strip milliseconds if present (.000Z -> Z)
+  ts="\${ts%.???Z}Z"
   if command -v gdate >/dev/null 2>&1; then gdate -d "$ts" +%s 2>/dev/null && return; fi
   date -u -j -f "%Y-%m-%dT%H:%M:%S%z" "\${ts/Z/+0000}" +%s 2>/dev/null && return
   python3 - "$ts" <<'PY' 2>/dev/null
