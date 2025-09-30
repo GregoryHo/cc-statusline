@@ -30,7 +30,13 @@ jobs:
       - name: Verify CLI works
         run: ./dist/index.js --version
 
-      - name: Run tests
+      - name: Run unit tests
+        run: npm run test:run
+
+      - name: Generate coverage report
+        run: npm run test:coverage
+
+      - name: Run integration tests
         run: |
           # Installation test
           ./test/test-installation.sh
