@@ -3,26 +3,27 @@ name: Claude Code Review
 on:
   pull_request:
     types: [opened, synchronize]
-    # Optional: Only run on specific file changes
-    # paths:
-    #   - "src/**/*.ts"
-    #   - "src/**/*.tsx"
-    #   - "src/**/*.js"
-    #   - "src/**/*.jsx"
+    # Only run on code changes (skip docs-only changes)
+    paths:
+      - "src/**/*.ts"
+      - "src/**/*.js"
+      - ".github/workflows/**"
+      - "package.json"
+      - "tsconfig.json"
 
 jobs:
   claude-review:
-    # Optional: Filter by PR author
-    # if: |
-    #   github.event.pull_request.user.login == 'external-contributor' ||
-    #   github.event.pull_request.user.login == 'new-developer' ||
-    #   github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR'
+    # Skip review for WIP, draft PRs, or when explicitly skipped
+    if: |
+      !github.event.pull_request.draft &&
+      !contains(github.event.pull_request.title, '[skip-review]') &&
+      !contains(github.event.pull_request.title, 'WIP')
 
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      pull-requests: read
-      issues: read
+      pull-requests: write  # Required for Claude to comment on PRs
+      issues: write         # Required for Claude to comment on issues
       id-token: write
 
     steps:
@@ -41,38 +42,59 @@ jobs:
           # Optional: Specify model (defaults to Claude Sonnet 4, uncomment for Claude Opus 4.1)
           # model: "claude-opus-4-1-20250805"
 
-          # Direct prompt for automated review (no @claude mention needed)
+          # Project-specific review prompt for cc-statusline
           direct_prompt: |
-            Please review this pull request and provide feedback on:
-            - Code quality and best practices
-            - Potential bugs or issues
-            - Performance considerations
-            - Security concerns
-            - Test coverage
+            You are reviewing a PR for **cc-statusline**, a CLI tool that generates custom statuslines for Claude Code.
 
-            Be constructive and helpful in your feedback.
+            ## Project Context
+            - TypeScript CLI tool using ESM modules
+            - Generates bash scripts for terminal statuslines
+            - Uses Commander.js, Inquirer.js, Chalk, Ora
+            - Generated bash scripts must be POSIX-compliant
 
-          # Optional: Use sticky comments to make Claude reuse the same comment on subsequent pushes to the same PR
-          # use_sticky_comment: true
+            ## Review Checklist
 
-          # Optional: Customize review based on file types
-          # direct_prompt: |
-          #   Review this PR focusing on:
-          #   - For TypeScript files: Type safety and proper interface usage
-          #   - For API endpoints: Security, input validation, and error handling
-          #   - For React components: Performance, accessibility, and best practices
-          #   - For tests: Coverage, edge cases, and test quality
+            ### 1. Version Consistency (CRITICAL)
+            - If version changed, verify consistency across:
+              - package.json
+              - src/index.ts (VERSION constant)
+              - src/generators/bash-generator.ts (VERSION constant)
 
-          # Optional: Different prompts for different authors
-          # direct_prompt: |
-          #   ${{ github.event.pull_request.author_association == 'FIRST_TIME_CONTRIBUTOR' &&
-          #   'Welcome! Please review this PR from a first-time contributor. Be encouraging and provide detailed explanations for any suggestions.' ||
-          #   'Please provide a thorough code review focusing on our coding standards and best practices.' }}
+            ### 2. Documentation
+            - CHANGELOG.md updated for user-facing changes
+            - README.md examples still accurate
+            - CLAUDE.md updated if dev workflow changed
 
-          # Optional: Add specific tools for running tests or linting
-          # allowed_tools: "Bash(npm run test),Bash(npm run lint),Bash(npm run typecheck)"
+            ### 3. TypeScript Code Quality
+            - ESM imports use .js extensions (e.g., `from './file.js'`)
+            - Strict type checking (no `any` without justification)
+            - 2-space indentation, no semicolons
+            - Conventional commit message format
 
-          # Optional: Skip review for certain conditions
-          # if: |
-          #   !contains(github.event.pull_request.title, '[skip-review]') &&
-          #   !contains(github.event.pull_request.title, '[WIP]')
+            ### 4. Bash Script Quality (if changes to src/generators/ or src/features/)
+            - POSIX compliance (no bashisms)
+            - Proper quote escaping in template strings
+            - Graceful fallbacks for missing dependencies (jq, git, ccusage)
+            - Error handling for edge cases
+
+            ### 5. Testing & Performance
+            - Are tests needed for this change?
+            - Performance implications considered? (target: <500ms execution)
+            - Breaking changes documented?
+
+            ## Review Style
+            - Be specific and actionable
+            - Cite line numbers when suggesting changes
+            - Explain the "why" behind suggestions
+            - Acknowledge good practices
+            - For first-time contributors, be extra welcoming
+
+            ## Severity Levels
+            Use these prefixes:
+            - 🔴 BLOCKER: Must fix before merge
+            - 🟡 SUGGESTION: Consider improving
+            - 🟢 NITPICK: Optional style improvement
+            - 💡 TIP: Educational comment
+
+          # Use sticky comments to keep PR conversation clean
+          use_sticky_comment: true
