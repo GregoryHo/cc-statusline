@@ -5,6 +5,50 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.4.0] - 2025-09-30
+
+### Added
+- ✨ **Icon System** - Nerd Font support with customizable icon styles (emoji/nerd-font/none)
+  - Beautiful icons for directory (󰉋), git (󰊢), model (󱤇), context (󰾶), session (󱎫), cost (󰈙), tokens (󱪙)
+  - Graceful fallback to emoji when Nerd Fonts not available
+  - Icon style selection during interactive setup
+- ✨ **Non-Interactive Mode** - `--defaults` flag for automated setup
+  - Perfect for CI/CD pipelines and scripting
+  - Uses sensible defaults (all features enabled, nerd-font icons, colors on)
+  - Example: `cc-statusline init --defaults`
+- ✨ **Comma Formatting** - Large numbers now display with thousand separators
+  - Token counts: "1,234,567 tokens" instead of "1234567 tokens"
+  - Burn rate: "135,957 tpm" for better readability
+- ✨ **Performance Testing Suite** - Comprehensive benchmarking tools
+  - TypeScript-based benchmark suite (`test/performance/benchmark.ts`)
+  - Bash stress testing (`test/performance/stress-test.sh`)
+  - Real-time system monitoring (`test/performance/monitor.ts`)
+  - See `test/performance/PERFORMANCE.md` for detailed guide
+
+### Changed
+- 🎨 **Color Harmony Improvements** - Enhanced visual consistency
+  - Token/usage color changed from purple (141) to deep sky blue (111)
+  - Better color coordination across all statusline elements
+  - More cohesive visual experience in Claude Code terminal
+- 🎨 **Icon Consistency** - All features now have color-coordinated icons
+  - Directory, git, model, version, output style, Claude Code version icons
+  - Consistent visual language throughout statusline
+
+### Fixed
+- 🐛 **Session Time Calculation** - Fixed incorrect "0h 0m until reset (100%)" display
+  - Added millisecond handling in ISO 8601 timestamp parsing
+  - `to_epoch()` function now strips `.000Z` before parsing
+  - Session time and progress bars now display correctly
+- 🐛 **Context Display** - Improved fallback for unavailable context data
+  - Shows "100% remaining" instead of "TBD" when context unavailable
+  - Better user experience for non-active sessions
+- 🐛 **HAS_JQ Detection** - Fixed context remaining display issues
+  - Separated jq availability detection from context calculation
+  - Context features now work reliably with or without jq
+- 🐛 **Icon System Implementation** - Corrected icon selection logic
+  - Set nerd-font as default icon style for better visual experience
+  - Fixed icon rendering in generated statusline scripts
+
 ## [1.3.2] - 2025-08-28
 
 ### Fixed

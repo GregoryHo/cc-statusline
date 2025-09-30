@@ -114,8 +114,9 @@ Enhance your Claude Code terminal with useful information:
 ### 🆕 Installation Options (v1.2.4+)
 - **🏠 Global Installation** (`~/.claude/`) - Use across all your projects
 - **📂 Project Installation** (`./.claude/`) - Keep settings project-specific
+- **🤖 Non-Interactive Mode** (`--defaults`) - Automated setup for CI/CD (v1.4.0+)
 
-### 🔥 Default Features (All Pre-selected in v1.2.2+)
+### 🔥 Default Features (All Pre-selected)
 | Feature | Description | Example |
 |---------|-------------|---------|
 | 📁 **Directory** | Current working directory | `~/my-project` |
@@ -130,15 +131,23 @@ Enhance your Claude Code terminal with useful information:
 ### 🚀 Power Features (Also Pre-selected)
 | Feature | Description | Example |
 |---------|-------------|---------|
-| 📊 **Tokens** | Token consumption with burn rate | `14638846 tok (279900 tpm)` |
+| 📊 **Tokens** | Token consumption with burn rate | `1,234,567 tok (135,957 tpm)` |
+| 🎨 **Icon Styles** | Nerd Font, Emoji, or None | `󰉋 ~/project` or `📁 ~/project` |
 
 ### 🎨 Example Outputs
 
-**New 3-Line Modern Layout (v1.2.2+):**
+**New 3-Line Modern Layout with Nerd Fonts (v1.4.0+):**
 ```
-📁 ~/Projects/cc-statusline  🌿 feature/context-usage-output-styles  🤖 Sonnet 4  📟 v1.0.85  🎨 default
-🧠 Context Remaining: 83% [========--]  ⌛ 3h 7m until reset at 01:00 (37%) [===-------]
-💰 $49.00 ($16.55/h)  📊 14638846 tok (279900 tpm)
+󰉋 ~/Projects/cc-statusline  󰊢 feature/icons  󱤇 Sonnet 4  󰘚 v2.0.0  󰏘 default
+󰾶 Context: [▓▓▓▓▓▓▓▓░░] 83% remaining  󱎫 3h 7m until reset at 01:00 (37%) [▓▓▓░░░░░░░]
+󰈙 $49.00 ($16.55/h)  󱪙 1,463,884 tokens (135,957 tpm)
+```
+
+**Classic Layout with Emoji:**
+```
+📁 ~/Projects/cc-statusline  🌿 main  🤖 Sonnet 4  📟 v2.0.0
+🧠 Context Remaining: 83% [▓▓▓▓▓▓▓▓░░]
+💰 $49.00 ($16.55/h)  📊 1,463,884 tok (135,957 tpm)
 ```
 
 **Compact Mode:**
@@ -168,6 +177,28 @@ cc-statusline preview .claude/statusline.sh
 - 🛡️ **Settings Protection** - Preserves your existing settings.json configurations
 - ⚠️ **Conflict Detection** - Warns when other statuslines are configured
 - ✅ **Smart Defaults** - Project-level installation by default for safety
+
+### Non-Interactive Mode (v1.4.0+)
+
+Perfect for automation, CI/CD, or when you want sensible defaults:
+
+```bash
+# Quick setup with all defaults
+cc-statusline init --defaults
+
+# Non-interactive with custom output
+cc-statusline init --defaults --output ./custom-statusline.sh
+
+# Skip installation (just generate the script)
+cc-statusline init --defaults --no-install
+```
+
+**Default configuration includes:**
+- ✅ All features enabled (directory, git, model, context, usage, session, tokens, burn rate)
+- 🎨 Colors enabled
+- 📦 Nerd Font icons
+- 📝 Logging enabled
+- 📁 Project-level installation (`./.claude/`)
 
 ### Custom Installation
 ```bash

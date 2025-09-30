@@ -18,18 +18,26 @@ npm run build
 # Watch mode for development
 npm run dev
 
-# Test the CLI locally
+# Test the CLI locally (interactive)
 ./dist/index.js init --no-install
-./dist/index.js preview ./test-statusline.sh
+
+# Test with defaults (non-interactive)
+./dist/index.js init --defaults --no-install
+
+# Preview generated statusline
+./dist/index.js preview ./.claude/statusline.sh
 
 # Test as if installed globally
 npx . init
 
-# Test the generated statusline with mock data
-./test_debug.sh
-
 # Run installation tests
 ./test/test-installation.sh
+
+# Run performance benchmarks
+npx tsx test/performance/benchmark.ts
+
+# Run stress tests
+./test/performance/stress-test.sh
 ```
 
 ## Important Development Notes
@@ -39,7 +47,7 @@ npx . init
 Instead, follow this workflow:
 1. Modify the source code in `src/` directory (e.g., colors in `src/features/usage.ts`)
 2. Run `npm run build` to rebuild the project
-3. Run `./dist/index.js init --no-install` to regenerate locally
+3. Run `./dist/index.js init --defaults` to regenerate with defaults
 4. Test with `./dist/index.js preview ./.claude/statusline.sh`
 
 The generated `.claude/statusline.sh` will be overwritten on each regeneration, so direct edits are lost.
