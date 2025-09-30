@@ -1,4 +1,4 @@
-export type IconStyle = 'emoji' | 'nerd-font' | 'unicode' | 'ascii'
+export type IconStyle = 'emoji' | 'nerd-font' | 'unicode' | 'ascii' | 'none'
 
 export interface IconSet {
   directory: string
@@ -84,6 +84,20 @@ export const asciiIcons: IconSet = {
   ccVersion: '[CC]'
 }
 
+// No icons (text only)
+export const noIcons: IconSet = {
+  directory: '',
+  git: '',
+  model: '',
+  context: '',
+  cost: '',
+  tokens: '',
+  session: '',
+  version: '',
+  style: '',
+  ccVersion: ''
+}
+
 export function getIconSet(style: IconStyle): IconSet {
   switch (style) {
     case 'nerd-font':
@@ -92,9 +106,11 @@ export function getIconSet(style: IconStyle): IconSet {
       return unicodeIcons
     case 'ascii':
       return asciiIcons
+    case 'none':
+      return noIcons
     case 'emoji':
       return emojiIcons
     default:
-      return nerdFontIcons  // Default to nerd-font for best visual experience
+      return emojiIcons  // Default to emoji for best compatibility
   }
 }
