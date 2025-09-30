@@ -26,7 +26,47 @@ Thank you for your interest in contributing to cc-statusline! This document prov
 
 ## 🛠️ Development Workflow
 
-### Making Changes
+### Issue-Driven Development (Recommended)
+
+We follow an issue-first workflow for all contributions:
+
+1. **Start with an Issue**
+   - Create a new issue or pick an existing one
+   - Discuss your approach in the issue comments
+   - Get feedback before starting implementation
+
+2. **Create a Feature Branch**
+   - **Never commit directly to main**
+   - Use descriptive branch names:
+     - `feat/feature-name` - New features
+     - `fix/bug-description` - Bug fixes
+     - `test/what-tested` - Test additions
+     - `docs/what-changed` - Documentation
+     - `refactor/what-refactored` - Code refactoring
+
+3. **Develop with Tests**
+   - Write tests first when possible (TDD)
+   - Run tests: `npm run test:run`
+   - Build project: `npm run build`
+   - Ensure all tests pass
+
+4. **Commit with Issue Reference**
+   - Format: `type: description (#issue-number)`
+   - Example: `feat: add unit testing framework (#4)`
+   - Use conventional commits (see below)
+
+5. **Create Pull Request**
+   - Push your branch: `git push -u origin feat/your-feature`
+   - Create PR on GitHub
+   - Use "Closes #N" in PR description to auto-close issue
+   - Ensure CI pipeline passes
+
+6. **Address Review Feedback**
+   - Respond to comments
+   - Make requested changes
+   - Push updates to same branch
+
+### Making Changes (Quick Reference)
 
 1. **Create a feature branch**:
    ```bash
