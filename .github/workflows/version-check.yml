@@ -1,0 +1,43 @@
+name: Version Consistency Check
+
+on:
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'src/index.ts'
+      - 'src/generators/bash-generator.ts'
+
+jobs:
+  check-versions:
+    name: Check Version Consistency
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Extract and compare versions
+        run: |
+          echo "Checking version consistency..."
+
+          # Extract versions
+          PACKAGE_VERSION=$(grep '"version"' package.json | head -1 | sed 's/.*: *"\([^"]*\)".*/\1/')
+          INDEX_VERSION=$(grep "const VERSION = " src/index.ts | sed "s/.*VERSION = '\([^']*\)'.*/\1/")
+          GENERATOR_VERSION=$(grep "const VERSION = " src/generators/bash-generator.ts | sed "s/.*VERSION = '\([^']*\)'.*/\1/")
+
+          echo "📦 package.json:        $PACKAGE_VERSION"
+          echo "📄 src/index.ts:        $INDEX_VERSION"
+          echo "🔧 bash-generator.ts:   $GENERATOR_VERSION"
+
+          # Compare
+          if [ "$PACKAGE_VERSION" != "$INDEX_VERSION" ]; then
+            echo "❌ Version mismatch: package.json ($PACKAGE_VERSION) != src/index.ts ($INDEX_VERSION)"
+            exit 1
+          fi
+
+          if [ "$PACKAGE_VERSION" != "$GENERATOR_VERSION" ]; then
+            echo "❌ Version mismatch: package.json ($PACKAGE_VERSION) != bash-generator.ts ($GENERATOR_VERSION)"
+            exit 1
+          fi
+
+          echo "✅ All versions match: $PACKAGE_VERSION"
