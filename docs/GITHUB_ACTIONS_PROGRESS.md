@@ -215,29 +215,62 @@ Current limitations:
 - 執行速度:
 ```
 
-### Task 2.3: 優化 Claude Code Review Prompt
+### Task 2.3: 優化 Claude Code Review Prompt ✅
 
-**開始時間：** ___________
-**完成時間：** ___________
+**開始時間：** 2025-09-30 15:30
+**完成時間：** 2025-09-30 15:45
 
-- [ ] 修改 `claude-code-review.yml`
-- [ ] 加入專案特定檢查清單
-- [ ] 測試新的 prompt
-- [ ] 比較優化前後的差異
-
-**Prompt 優化效果：**
-
-| 項目 | 優化前 | 優化後 |
-|------|--------|--------|
-| 抓到 version 不一致 | ❌/✅ | ❌/✅ |
-| 指出 bash 問題 | ❌/✅ | ❌/✅ |
-| 檢查 CHANGELOG | ❌/✅ | ❌/✅ |
-| Review 深度 | 1-5 | 1-5 |
-
-**最佳實踐發現：**
+**執行順序調整說明：**
 ```
-記錄什麼樣的 prompt 最有效...
+原始順序: 2.1 → 2.2 → 2.3 → 2.4
+實際順序: 2.3 → 2.4 → 2.1 → 2.2
+
+理由: 先完成快速任務 (2.3, 2.4) 建立動力，再進行較複雜的任務 (2.1, 2.2)
 ```
+
+- [x] 修改 `claude-code-review.yml`
+- [x] 加入專案特定檢查清單
+- [x] 啟用 use_sticky_comment
+- [x] 加入 path filters (cost optimization)
+- [x] 加入 skip conditions (draft PRs, [skip-review], WIP)
+
+**Prompt 優化內容：**
+
+**1. 專案上下文 (Project Context)**
+```yaml
+- TypeScript CLI tool using ESM modules
+- Generates bash scripts for terminal statuslines
+- Uses Commander.js, Inquirer.js, Chalk, Ora
+- Generated bash scripts must be POSIX-compliant
+```
+
+**2. 檢查清單 (Review Checklist)**
+- ✅ Version Consistency (CRITICAL) - 3 檔案同步檢查
+- ✅ Documentation requirements (CHANGELOG, README, CLAUDE.md)
+- ✅ TypeScript/ESM conventions (.js extensions, no semicolons)
+- ✅ Bash Script Quality (POSIX compliance, quote escaping)
+- ✅ Performance targets (<500ms execution)
+
+**3. 成本優化設定**
+- ✅ `use_sticky_comment: true` - 重複使用同一個 comment
+- ✅ Path filters - 只在代碼改動時觸發
+- ✅ Skip conditions - 跳過 draft/WIP PRs
+
+**4. Review Style Guidelines**
+- Severity levels: 🔴 BLOCKER, 🟡 SUGGESTION, 🟢 NITPICK, 💡 TIP
+- Specific and actionable feedback
+- Explain "why" behind suggestions
+
+**預期效果：** (待下次 PR 驗證)
+| 項目 | 優化前 | 優化後 (預期) |
+|------|--------|--------------|
+| 專案特定檢查 | ❌ 通用 | ✅ cc-statusline 專用 |
+| Version 一致性檢查 | ❌ 無 | ✅ 自動檢查 3 檔案 |
+| Bash 品質檢查 | ❌ 無 | ✅ POSIX, quote escaping |
+| 成本優化 | ❌ 每次都觸發 | ✅ 僅代碼改動時 |
+| Review 清晰度 | ⚠️ 普通 | ✅ 結構化 + 嚴重程度標示 |
+
+**Commit:** `87f5126` - feat: optimize Claude code review workflow with project-specific prompts
 
 ### Task 2.4: 啟用 Claude 工具執行
 
