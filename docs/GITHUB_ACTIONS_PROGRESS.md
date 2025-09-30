@@ -272,26 +272,56 @@ Current limitations:
 
 **Commit:** `87f5126` - feat: optimize Claude code review workflow with project-specific prompts
 
-### Task 2.4: 啟用 Claude 工具執行
+### Task 2.4: 啟用 Claude 工具執行 ✅
 
-**開始時間：** ___________
-**完成時間：** ___________
+**開始時間：** 2025-09-30 16:00
+**完成時間：** 2025-09-30 16:10
 
-- [ ] 修改 `claude.yml` 加入 `allowed_tools`
-- [ ] 加入 `custom_instructions`
-- [ ] 測試請 Claude 執行 build
-- [ ] 測試請 Claude 執行 tests
-- [ ] 驗證輸出在 comment 中顯示
+- [x] 修改 `claude.yml` 加入 `allowed_tools`
+- [x] 加入 `custom_instructions`
+- [ ] 測試請 Claude 執行 build (待新 PR 測試)
+- [ ] 測試請 Claude 執行 tests (待新 PR 測試)
+- [ ] 驗證輸出在 comment 中顯示 (待新 PR 測試)
 
-**工具執行測試：**
+**Allowed Tools 清單：**
+```bash
+# Build & Development
+- npm run build
+- npm run dev
+- npm ci
+
+# CLI Testing
+- ./dist/index.js --version
+- ./dist/index.js init --defaults --no-install
+- ./dist/index.js preview ./.claude/statusline.sh
+
+# Testing & Benchmarking
+- npx tsx test/performance/benchmark.ts
+- ./test/test-installation.sh
 ```
-測試的指令：
-- @claude 請執行 npm run build
-- @claude 請運行 performance benchmark
-- ...
 
-成功率：___%
+**Custom Instructions 內容：**
+- ✅ ESM imports with .js extensions
+- ✅ Version consistency (3 files)
+- ✅ Conventional commits format
+- ✅ CHANGELOG.md update requirements
+- ✅ Project structure overview
+- ✅ Development workflow guidelines
+- ✅ POSIX compliance requirements
+- ✅ Performance targets (<500ms)
+
+**測試計劃：** (待新 PR)
 ```
+測試指令：
+1. @claude 請執行 npm run build
+2. @claude 請檢查 CLI version
+3. @claude 請運行 performance benchmark
+4. @claude 請執行 installation test
+
+預期：Claude 能成功執行並在 comment 中顯示輸出
+```
+
+**Commit:** `aa81540` - feat: enable Claude tool execution with project-specific instructions
 
 ### 階段二總結
 
