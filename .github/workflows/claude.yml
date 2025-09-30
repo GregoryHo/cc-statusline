@@ -50,15 +50,45 @@ jobs:
           # Optional: Trigger when specific user is assigned to an issue
           # assignee_trigger: "claude-bot"
 
-          # Optional: Allow Claude to run specific commands
-          # allowed_tools: "Bash(npm install),Bash(npm run build),Bash(npm run test:*),Bash(npm run lint:*)"
+          # Allow Claude to run project-specific commands
+          allowed_tools: |
+            Bash(npm run build),
+            Bash(npm run dev),
+            Bash(npm ci),
+            Bash(./dist/index.js --version),
+            Bash(./dist/index.js init --defaults --no-install),
+            Bash(./dist/index.js preview ./.claude/statusline.sh),
+            Bash(npx tsx test/performance/benchmark.ts),
+            Bash(./test/test-installation.sh)
 
-          # Optional: Add custom instructions for Claude to customize its behavior for your project
-          # custom_instructions: |
-          #   Follow our coding standards
-          #   Ensure all new code has tests
-          #   Use TypeScript for new files
+          # Project-specific instructions for cc-statusline
+          custom_instructions: |
+            This is **cc-statusline**, a CLI tool for generating Claude Code statuslines.
 
-          # Optional: Custom environment variables for Claude
-          # claude_env: |
-          #   NODE_ENV: test
+            ## Key Conventions
+            - Use ESM imports with .js extensions (e.g., `from './file.js'`)
+            - 2-space indentation, no semicolons
+            - Conventional commits (feat:, fix:, docs:, chore:, etc.)
+            - Version updates need changes in 3 files:
+              - package.json
+              - src/index.ts (VERSION constant)
+              - src/generators/bash-generator.ts (VERSION constant)
+            - Always update CHANGELOG.md for user-facing changes
+
+            ## Project Structure
+            - src/cli/ - CLI commands and prompts
+            - src/features/ - Feature implementations (git, usage, colors, icons)
+            - src/generators/ - Script generators (bash)
+            - src/utils/ - Utilities (installer, validator, tester)
+
+            ## Important Notes
+            - DO NOT directly modify `.claude/statusline.sh` - it's auto-generated
+            - Generated bash scripts must be POSIX-compliant
+            - Performance target: statusline execution <500ms
+
+            ## When Asked to Make Changes
+            1. Read relevant files first
+            2. Run `npm run build` after source changes
+            3. Test with `./dist/index.js preview ./.claude/statusline.sh`
+            4. Update CHANGELOG.md if user-facing
+            5. Check version consistency if version changed
