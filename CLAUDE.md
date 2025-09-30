@@ -52,6 +52,27 @@ Instead, follow this workflow:
 
 The generated `.claude/statusline.sh` will be overwritten on each regeneration, so direct edits are lost.
 
+## Development Workflow (MUST FOLLOW)
+
+**CRITICAL**: Never commit directly to main branch. Always use feature branches.
+
+### Standard Flow
+1. **Pick/Create Issue** - Start with GitHub issue (#N)
+2. **Create Branch** - `git checkout -b feat/feature-name` (or fix/, test/, docs/, refactor/)
+3. **Develop** - Write code + tests
+4. **Test** - `npm run test:run && npm run build`
+5. **Commit** - `git commit -m "feat: description (#N)"`
+6. **Push** - `git push -u origin feat/feature-name`
+7. **Create PR** - Use "Closes #N" in PR description
+8. **Merge** - After review and CI passes
+
+### Branch Naming Conventions
+- `feat/` - New features
+- `fix/` - Bug fixes
+- `test/` - Test additions
+- `docs/` - Documentation updates
+- `refactor/` - Code refactoring
+
 ## Architecture
 
 The codebase follows a modular ESM TypeScript architecture:
