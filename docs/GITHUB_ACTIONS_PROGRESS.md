@@ -467,31 +467,45 @@ PR #2: https://github.com/GregoryHo/cc-statusline/pull/2
 
 ## 🐛 問題與解決方案
 
-### 問題 1: _____________________
+### 問題 1: Claude Workflow 權限不足 ✅ 已解決
 
 **現象：**
 ```
-描述問題...
+啟用 GitHub Actions 後，在 PR 中使用 @claude 觸發互動式 Claude
+workflow 執行但失敗，顯示 "Failure" 狀態
 ```
 
 **錯誤訊息：**
 ```
-貼上錯誤訊息...
+Process completed with exit code 1.
+Prepare step failed with error: Resource not accessible by integration -
+https://docs.github.com/rest/issues/comments#create-an-issue-comment
 ```
 
-**嘗試的解決方法：**
-1. ❌ 方法 A - 失敗原因
-2. ❌ 方法 B - 失敗原因
-3. ✅ 方法 C - 成功！
+**根本原因：**
+- workflow 的 `permissions` 只有 `read` 權限
+- Claude 需要 `write` 權限才能發表 comments
+- 兩個 workflows 都有此問題: `claude.yml` 和 `claude-code-review.yml`
 
 **最終解決方案：**
+```yaml
+# 修改 .github/workflows/claude.yml 和 claude-code-review.yml
+permissions:
+  contents: read
+  pull-requests: write  # 從 read 改為 write
+  issues: write         # 從 read 改為 write
+  id-token: write
+  actions: read         # (claude.yml only)
 ```
-詳細步驟...
-```
+
+**Commit:** `8a825d8` - fix: add write permissions for Claude workflows to post comments
 
 **經驗教訓：**
 ```
-下次遇到類似問題應該...
+1. GitHub Actions workflows 需要明確授予 write 權限才能修改 PR/Issue
+2. 錯誤訊息 "Resource not accessible by integration" 通常表示權限不足
+3. 即使 GitHub App 有權限，workflow 的 permissions 也必須正確設定
+4. 測試時要仔細查看 Actions logs 的錯誤訊息
 ```
 
 ---
