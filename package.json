@@ -1,6 +1,6 @@
 {
   "name": "@chongdashu/cc-statusline",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "description": "Interactive CLI tool for generating custom Claude Code statuslines",
   "type": "module",
   "main": "dist/index.js",

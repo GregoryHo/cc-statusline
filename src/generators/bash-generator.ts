@@ -5,7 +5,7 @@ import { generateUsageBashCode, generateUsageDisplayCode, generateUsageUtilities
 import { getIconSet } from '../features/icons.js'
 
 // Version will be updated when releasing
-const VERSION = '1.4.0'
+const VERSION = '1.6.0'
 
 export function generateBashStatusline(config: StatuslineConfig): string {
   const hasGit = config.features.includes('git')
