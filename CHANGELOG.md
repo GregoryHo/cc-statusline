@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2025-10-01
+
+### Changed
+- ⬆️ **Dependency Upgrades** - All dependencies updated to latest stable versions
+  - commander: 11.1.0 → 14.0.1 (CLI framework)
+  - inquirer: 9.3.7 → 12.9.6 (interactive prompts)
+  - ora: 7.0.1 → 9.0.0 (loading spinners)
+  - chalk: 5.5.0 → 5.6.2 (terminal colors)
+  - typescript: 5.9.2 → 5.9.3 (compiler)
+  - @types/node: 20.19.10 → 24.6.1 (Node.js types)
+  - @types/inquirer: 9.0.7 → 9.0.9 (inquirer types)
+
+### Added
+- ✨ **TypeScript Declarations** - Enabled type declarations for better developer experience
+  - Generated `.d.ts` files for type-safe imports
+  - Resolved inquirer type issues that blocked declarations
+  - Future consumers can now import with full type safety
+
+### Fixed
+- 🔒 **Security** - All npm audit vulnerabilities resolved (0 vulnerabilities)
+- 🐛 **Compatibility** - No breaking changes, fully backward compatible
+
 ## [1.5.0] - 2025-09-30
 
 ### Added

@@ -1,6 +1,6 @@
 {
   "name": "@chongdashu/cc-statusline",
-  "version": "1.4.0",
+  "version": "1.6.0",
   "description": "Interactive CLI tool for generating custom Claude Code statuslines",
   "type": "module",
   "main": "dist/index.js",
@@ -36,18 +36,18 @@
   },
   "license": "MIT",
   "dependencies": {
-    "chalk": "^5.3.0",
-    "commander": "^11.1.0",
-    "inquirer": "^9.2.12",
-    "ora": "^7.0.1"
+    "chalk": "^5.6.2",
+    "commander": "^14.0.1",
+    "inquirer": "^12.9.6",
+    "ora": "^9.0.0"
   },
   "devDependencies": {
-    "@types/inquirer": "^9.0.7",
-    "@types/node": "^20.10.5",
+    "@types/inquirer": "^9.0.9",
+    "@types/node": "^24.6.1",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
     "tsup": "^8.0.1",
-    "typescript": "^5.3.3",
+    "typescript": "^5.9.3",
     "vitest": "^3.2.4"
   },
   "engines": {
