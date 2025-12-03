@@ -271,8 +271,94 @@ If auto-configuration fails, simply add this to `.claude/settings.json`:
 - **Install jq**: See the jq installation guide below
 - **ccusage setup**: Works automatically via `npx ccusage@latest`
 - **Git not found**: Install git for branch display
-- **Context not showing**: Ensure you're in an active Claude Code session with context usage
+- **Context not showing**: See detailed Context Troubleshooting section below
 - **Colors not working**: Check that NO_COLOR environment variable is not set
+
+### 🔍 Context Remaining Troubleshooting
+
+If the "Context remaining" feature stops working or shows error messages, use the diagnostic tool:
+
+```bash
+npx cc-statusline diagnose
+```
+
+The diagnose command checks:
+- ✅ jq installation (required for context feature)
+- ✅ Statusline file location
+- ✅ Settings configuration
+- ✅ Claude Code session files
+- ✅ Logging status
+
+#### Common Context Issues
+
+**"Context: No session ID"**
+- **Cause**: Claude Code hasn't provided a session ID yet
+- **Fix**: This is normal for preview mode. Use statusline in a real Claude Code session.
+
+**"Context: jq required"**
+- **Cause**: jq is not installed on your system
+- **Fix**: Install jq:
+  ```bash
+  # macOS
+  brew install jq
+
+  # Linux (Ubuntu/Debian)
+  sudo apt-get install jq
+
+  # Linux (CentOS/RHEL)
+  sudo yum install jq
+  ```
+
+**"Context: Session file missing"**
+- **Cause**: Session file hasn't been created yet or was deleted
+- **Why it happens**: This can occur when:
+  - Starting a new session (file created after first API call)
+  - Claude Code cleaned up old session files
+  - Working in a project for the first time
+- **Fix**: Continue using Claude Code normally. The file will be created automatically.
+
+**"Context: No usage data"**
+- **Cause**: Session file exists but contains no token usage information yet
+- **Fix**: Continue the conversation. Usage data is added after Claude responds.
+
+#### Debugging Context Issues
+
+1. **Enable detailed logging**:
+   - Regenerate statusline with logging enabled: `npx cc-statusline init`
+   - Check logs: `cat .claude/statusline.log`
+   - Look for lines starting with "Context:" to see exactly what's failing
+
+2. **Check session file manually**:
+   ```bash
+   # Find your project's session directory
+   ls ~/.claude/projects/
+
+   # Check for session files (replace with your project path)
+   ls ~/.claude/projects/-Users-yourname-path-to-project/
+
+   # View latest session file
+   tail -20 ~/.claude/projects/-Users-yourname-path-to-project/[session-id].jsonl
+   ```
+
+3. **Verify jq is working**:
+   ```bash
+   jq --version
+   ```
+
+4. **Test statusline with preview**:
+   ```bash
+   npx cc-statusline preview .claude/statusline.sh
+   ```
+
+#### Why Context Fails After Working Fine
+
+If context was working but suddenly stopped:
+- **Session file was cleaned**: Claude Code may have cleaned old sessions
+- **Project moved**: Session file path is based on directory location
+- **jq was uninstalled**: Check if jq is still available
+- **New session started**: New session file needs time to accumulate data
+
+To diagnose, check the log file which will show the exact reason.
 
 ## 🚀 Performance
 

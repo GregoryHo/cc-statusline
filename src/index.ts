@@ -30,6 +30,14 @@ program
   })
 
 program
+  .command('diagnose')
+  .description('Run diagnostics to troubleshoot statusline issues')
+  .action(async () => {
+    const { diagnoseCommand } = await import('./cli/diagnose.js')
+    await diagnoseCommand()
+  })
+
+program
   .command('test')
   .description('Test statusline with real Claude Code JSON input')
   .option('-c, --config <path>', 'Configuration file to test')

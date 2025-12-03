@@ -339,4 +339,181 @@ describe('generateBashStatusline', () => {
       expect(script.endsWith('\n\n')).toBe(false)
     })
   })
+
+  describe('context feature error handling', () => {
+    it('should include context fail reason variable', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      expect(script).toContain('context_fail_reason')
+    })
+
+    it('should log when session_id is missing', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      expect(script).toContain('log "Context: no session_id available"')
+      expect(script).toContain('context_fail_reason="No session ID"')
+    })
+
+    it('should log when jq is not available', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      expect(script).toContain('log "Context: jq not available"')
+      expect(script).toContain('context_fail_reason="jq required"')
+    })
+
+    it('should log when session file is missing', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      expect(script).toContain('log "Context: session file not found')
+      expect(script).toContain('context_fail_reason="Session file missing"')
+    })
+
+    it('should log when no valid token data found', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      expect(script).toContain('log "Context: no valid token data found in session file"')
+      expect(script).toContain('context_fail_reason="No usage data"')
+    })
+
+    it('should display fail reason instead of fake 100% when context fails', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: true,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: false,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      // Should show the fail reason
+      expect(script).toContain('elif [ -n "$context_fail_reason" ]; then')
+      expect(script).toContain('Context: ${context_fail_reason}')
+
+      // Should NOT have the old fallback showing fake 100%
+      expect(script).not.toContain('Context: [░░░░░░░░░░] 100% remaining')
+    })
+
+    it('should log session_id and session_file path', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      expect(script).toContain('log "Context: session_id=$session_id, project_dir=$project_dir"')
+      expect(script).toContain('log "Context: session_file=$session_file"')
+    })
+
+    it('should log token calculation details', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      expect(script).toContain('log "Context: tokens=$latest_tokens, used=$context_used_pct%, remaining=$context_remaining_pct%"')
+    })
+
+    it('should convert underscores to hyphens in project path', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      // Verify the path conversion includes underscore-to-hyphen transformation
+      // This matches Claude Code's directory naming convention
+      expect(script).toContain("sed 's|_|-|g'")
+    })
+
+    it('should convert dots to hyphens in project path', () => {
+      const config: StatuslineConfig = {
+        features: ['context'],
+        theme: 'default',
+        colors: false,
+        ccusageIntegration: false,
+        iconStyle: 'emoji',
+        logging: true,
+        installLocation: 'project'
+      }
+
+      const script = generateBashStatusline(config)
+
+      // Verify the path conversion includes dot-to-hyphen transformation
+      // This handles domain-style directory names like gitlab.paradise-soft.com.tw
+      expect(script).toContain("s|\\.|-|g")  // escaped dot in sed pattern
+      expect(script).toContain('# Claude Code converts: / to -, _ to -, . to -, then removes leading -')
+    })
+  })
 })
